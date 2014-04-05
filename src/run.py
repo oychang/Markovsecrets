@@ -60,6 +60,8 @@ def fetch_corpus():
             json.dump(d, f)
 
         cycle += 1
+    else:
+        return True
 
     return False
 
