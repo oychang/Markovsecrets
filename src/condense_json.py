@@ -48,4 +48,5 @@ def condense():
 def main():
     condense()
 
-main()
+if __name__ == '__main__':
+    main()
