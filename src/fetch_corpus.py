@@ -75,5 +75,5 @@ def fetch_corpus():
 def main():
     fetch_corpus()
 
-
-main()
+if __name__ == '__main__':
+    main()
