@@ -8,7 +8,7 @@ BASE_SECRETS_URL = 'https://graph.facebook.com/490886417614994/posts?'
 API_URL = '{0}access_token={1}'.format(BASE_SECRETS_URL, TOKEN)
 
 
-def url_builder(until=None, limit=2): # todo: raise
+def url_builder(until=None, limit=100):
     url = '{api}&limit={limit}'.format(api=API_URL, limit=limit)
     if until is not None:
         url = '{limited_url}&until={time}'.format(limited_url=url, time=until)
@@ -18,7 +18,8 @@ def url_builder(until=None, limit=2): # todo: raise
 def fetch_corpus():
     url = url_builder()
     cycle = 1
-    max_cycles = 1 # todo: raise
+    # Have a hard limit in case loop maintenance fails
+    max_cycles = 75
 
     if not os.path.isdir('../data'):
         os.mkdir('../data')
