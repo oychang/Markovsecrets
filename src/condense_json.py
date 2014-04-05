@@ -2,6 +2,8 @@ import os
 import json
 from glob import glob
 
+from unidecode import unidecode
+
 
 def save_messages(ls):
     d = {
@@ -32,7 +34,8 @@ def condense():
                 elif message.startswith('#'):
                     message = message[message.find(' '):]
 
-                message = message.lstrip().rstrip().replace('\n', '')
+                message = message.lstrip().rstrip().replace('\n', ' ')
+                message = unidecode(message)
 
                 messages.append(message)
     else:
