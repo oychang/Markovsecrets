@@ -45,20 +45,25 @@ def fetch_corpus():
             return False
 
         d = json.loads(request.text)
-        paging = d['paging']
-        data = d['data']
+        paging = d.get('paging', {})
+        data = d.get('data', [])
 
         if 0 == len(data):
             print('Got 0 results...assuming done.')
             return True
 
-        # Get next value of paging
-        url = paging['next']
-
         # Dump object to disk
         fn = '../data/{0}.json'.format(cycle)
         with open(fn, 'w') as f:
             json.dump(d, f)
+
+        # Get next value of paging
+        url = paging.get('next')
+        # This case will probably never be hit...we should get 0 results before
+        # ever running out of pages, but an even split might happen.
+        if url is None:
+            print('No more pages.')
+            break
 
         cycle += 1
     else:
