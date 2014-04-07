@@ -6,8 +6,7 @@ from flask import Flask, render_template
 
 MAX_LEN = 50
 
-tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static')
-app = Flask(__name__, template_folder=tmpl_dir)
+app = Flask(__name__)
 app.debug = True
 words = {}
 with open('data/mapping.json') as f:
