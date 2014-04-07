@@ -7,7 +7,6 @@ from flask import Flask, render_template
 MAX_LEN = 50
 
 app = Flask(__name__)
-app.debug = True
 words = {}
 with open('data/mapping.json') as f:
     words = json.load(f)
