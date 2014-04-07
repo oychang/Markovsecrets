@@ -53,7 +53,7 @@ def sanitize_message(words):
             words[i] = None
         w = w.replace('(', '').replace(')', '').replace('"', '')
 
-    return [w for w in words if w is not None]
+    return [w for w in words if w is not None and w != '']
 
 
 def add_to_dict(dict, prefix, suffix):

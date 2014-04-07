@@ -6,45 +6,39 @@ MAX_LEN = 50
 
 
 def shift(s, new):
-    s = s.lstrip()
     space = s.find(' ')
     if space == -1:
-        return ' ' + new
-    return s[space:].lstrip().rstrip() + ' ' + new
+        raise Exception('bad shift string ' + s)
+    return s[space+1:] + ' ' + new
 
 
 def main():
-    getw = lambda arr: '' if len(arr) == 0 else sample(arr, 1)[0]
+    getw = lambda arr: sample(arr, 1)[0]
 
     words = {}
     starters = 0
     wordlen = 1
+    seed()
+
     with open('../data/mapping.json') as f:
         words = json.load(f)
-    keys = words.keys()
+    sparse = words.get('sparse').get('data')
+    dense = words.get('dense').get('data')
 
-    starters = []
-    for i, k in enumerate(keys):
-        if k[0] == ' ':
-            starters.append(k)
-            keys[i] = None
-    suffixes = [w for w in keys if w is not None]
-
-    seed()
-    secret = ""
-
-    word = getw(starters)
-    associated = words[word]
-    secret = word.lstrip() + ' ' + getw(words[word])
+    word = getw(sparse)
+    associated = sparse[word]
+    secret = word + ' ' + getw(associated)
+    word = secret
 
     while wordlen < MAX_LEN:
-        associated = words[word]
+        associated = dense.get(word, [])
         if len(associated) == 0:
             break
         tmp = getw(associated)
         secret += ' ' + tmp
 
         word = shift(word, tmp)
+        wordlen += 1
 
     print secret
 
