@@ -20,7 +20,7 @@ def main():
     wordlen = 1
     seed()
 
-    with open('../data/mapping.json') as f:
+    with open('data/mapping.json') as f:
         words = json.load(f)
     sparse = words.get('sparse').get('data')
     dense = words.get('dense').get('data')
