@@ -1,2 +1,1 @@
-web: gunicorn server:app
-
+web: gunicorn --pythonpath markovsecrets web.server:app
