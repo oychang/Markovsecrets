@@ -1,7 +1,7 @@
 from sys import argv
 from os.path import isfile
-import json
 from pprint import pprint
+import json
 
 
 def main():
