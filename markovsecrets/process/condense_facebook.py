@@ -4,6 +4,8 @@ from glob import glob
 
 from unidecode import unidecode
 
+from fetch_facebook import SAVE_DIRECTORY
+
 
 def save_messages(ls):
     d = {
@@ -11,14 +13,14 @@ def save_messages(ls):
         'count': len(ls)
     }
 
-    with open('../data/condensed.json', 'w') as f:
+    with open('{0}/facebook.json'.format(SAVE_DIRECTORY), 'w') as f:
         json.dump(d, f)
 
     return True
 
 
 def condense():
-    files = glob('../data/[0-9]*.json')
+    files = glob('{0}/[0-9]*.json'.format(SAVE_DIRECTORY))
     messages = []
 
     for filename in files:
@@ -45,11 +47,9 @@ def condense():
     return False
 
 
-def hi():
-    print 'hi'
-
 def main():
     condense()
+
 
 if __name__ == '__main__':
     main()
