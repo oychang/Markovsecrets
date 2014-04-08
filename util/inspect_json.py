@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from sys import argv
 from os.path import isfile
 from pprint import pprint
