@@ -2,7 +2,7 @@ import os
 import json
 from random import randrange, seed, sample
 
-MAX_LEN = 50
+MAX_LEN = 75
 
 
 def shift(s, new):
