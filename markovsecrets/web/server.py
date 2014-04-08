@@ -1,22 +1,17 @@
 import os
 import json
 from random import randrange, seed, sample
-
 from flask import Flask, render_template
+# Assume we're running from Procfile (otherwise add `..` relative import)
+from process.get_secret import shift
 
 MAX_LEN = 50
 
 app = Flask(__name__)
 words = {}
+# TODO: not globl, rename
 with open('data/mapping.json') as f:
     words = json.load(f)
-
-
-def shift(s, new):
-    space = s.find(' ')
-    if space == -1:
-        raise Exception('bad shift string ' + s)
-    return s[space+1:] + ' ' + new
 
 
 @app.route('/secret')

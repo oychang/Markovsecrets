@@ -45,6 +45,9 @@ def condense():
     return False
 
 
+def hi():
+    print 'hi'
+
 def main():
     condense()
 
