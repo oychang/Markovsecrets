@@ -2,10 +2,10 @@ import os
 import json
 import requests
 
-
-TOKEN = open('../APP_TOKEN', 'r').read().rstrip()
+TOKEN = 'XXX'
 BASE_SECRETS_URL = 'https://graph.facebook.com/490886417614994/posts?'
 API_URL = '{0}access_token={1}'.format(BASE_SECRETS_URL, TOKEN)
+SAVE_DIRECTORY = '../../data/facebook'
 
 
 def url_builder(until=None, limit=100):
@@ -21,10 +21,11 @@ def fetch_corpus():
     # Have a hard limit in case loop maintenance fails
     max_cycles = 75
 
-    if not os.path.isdir('../data'):
-        os.mkdir('../data')
+    if not os.path.isdir(SAVE_DIRECTORY):
+        os.mkdir(SAVE_DIRECTORY)
     else:
-        print('Overwriting JSON in `../data`...')
+        print('WARN: potential overwriting...<enter to continue>')
+        raw_input()
 
     while cycle <= max_cycles:
         print('Cycle #{0}: getting {1}'.format(cycle, url))
@@ -53,7 +54,7 @@ def fetch_corpus():
             return True
 
         # Dump object to disk
-        fn = '../data/{0}.json'.format(cycle)
+        fn = '{1}/{0}.json'.format(cycle, SAVE_DIRECTORY)
         with open(fn, 'w') as f:
             json.dump(d, f)
 

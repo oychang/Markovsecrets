@@ -2,7 +2,9 @@ import os
 import json
 from random import randrange, seed, sample
 
+
 MAX_LEN = 75
+words = None
 
 
 def shift(s, new):
@@ -12,35 +14,41 @@ def shift(s, new):
     return s[space+1:] + ' ' + new
 
 
-def main():
-    getw = lambda arr: sample(arr, 1)[0]
+def get_word(arr):
+    return sample(arr, 1)[0]
 
-    words = {}
-    starters = 0
+
+def secret_me_bro(is_server=True):
+    global words
+    if words is None:
+        seed()
+
+        if is_server:
+            fn = 'data/mapping.json'
+        else:
+            from condense import DATA_DIR
+            fn = '{0}/mapping.json'.format(DATA_DIR)
+
+        with open(fn) as f:
+            words = json.load(f)
+
     wordlen = 1
-    seed()
-
-    with open('../data/mapping.json') as f:
-        words = json.load(f)
     sparse = words.get('sparse').get('data')
     dense = words.get('dense').get('data')
 
-    word = getw(sparse)
+    word = get_word(sparse)
     associated = sparse[word]
-    secret = word + ' ' + getw(associated)
+    secret = word + ' ' + get_word(associated)
     word = secret
 
     while wordlen < MAX_LEN:
         associated = dense.get(word, [])
         if len(associated) == 0:
             break
-        tmp = getw(associated)
+        tmp = get_word(associated)
         secret += ' ' + tmp
 
         word = shift(word, tmp)
         wordlen += 1
 
-    print secret
-
-if __name__ == '__main__':
-    main()
+    return secret
