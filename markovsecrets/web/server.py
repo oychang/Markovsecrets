@@ -1,8 +1,5 @@
-import os
-import json
-from random import randrange, seed, sample
 from flask import Flask, render_template
-from process.get_secret import shift, secret_me_bro
+from process.get_secret import secret_me_bro
 
 app = Flask(__name__)
 
