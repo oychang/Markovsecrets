@@ -65,6 +65,7 @@ def main():
         for msg in j.get(group):
             words = msg.split(' ')
             words_len = len(words)
+            initial = True
 
             # Check if sanitation left the message blank or with no
             # viable prefixes/suffixes.
@@ -73,13 +74,15 @@ def main():
 
             # Initial case
             add_to_dict(sparse, words[0], words[1])
-
-            words[0] = words[0][0].lower() + words[0][1:]
             prefix = words[0] + ' ' + words[1]
             for i, word in enumerate(words[1:]):
                 # Slice offset (1) & lookahead (1)
                 if (i + 1 + 1) < words_len:
                     add_to_dict(dense, prefix, words[i+2])
+                    if initial:
+                        words[0] = words[0][0].lower() + words[0][1:] + ' ' + words[1]
+                        add_to_dict(dense, prefix, words[i+2])
+
                     prefix = shift(prefix, words[i+2])
 
     # Write out our mapping (not in typical json reponse format though)
