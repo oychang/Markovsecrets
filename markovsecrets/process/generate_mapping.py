@@ -9,6 +9,7 @@ from condense import DATA_DIR
 * No URLs
 * Parentheses & double quotes are stripped (rarely closed properly)
 
+# TODO: update
 Schema:
 {
     "sparse": {
