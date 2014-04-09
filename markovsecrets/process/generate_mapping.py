@@ -1,6 +1,7 @@
 import os
 import json
 
+from condense import DATA_DIR
 
 '''
 * Prefix length = 2
@@ -44,18 +45,6 @@ def shift(s, new):
     return s[space+1:] + ' ' + new
 
 
-def sanitize_message(words):
-    for i, w in enumerate(words):
-        w = w.lstrip().rstrip()
-
-        if w.startswith('http') or w.startswith('https'):
-            # Avoid modifying length during iteration
-            words[i] = None
-        w = w.replace('(', '').replace(')', '').replace('"', '')
-
-    return [w for w in words if w is not None and w != '']
-
-
 def add_to_dict(dict, prefix, suffix):
     if not dict.has_key(prefix):
         dict[prefix] = set()
@@ -65,35 +54,36 @@ def add_to_dict(dict, prefix, suffix):
 
 def main():
     # Load in condensed down secrets
-    messages = []
-    with open('../data/condensed.json') as f:
+    with open('{0}/condensed.json'.format(DATA_DIR)) as f:
         j = json.load(f)
-        messages = j.get('data')
 
     sparse = {}
     dense = {}
+
     # Generate mappings
-    for msg in messages:
-        words = sanitize_message(msg.split(' '))
-        words_len = len(words)
+    for group in j:
+        for msg in j.get(group):
+            words = msg.split(' ')
+            words_len = len(words)
 
-        # Check if sanitation left the message blank or with no
-        # viable prefixes/suffixes.
-        if words_len < 2:
-            continue
+            # Check if sanitation left the message blank or with no
+            # viable prefixes/suffixes.
+            if words_len < 2:
+                continue
 
-        # Initial case
-        add_to_dict(sparse, words[0], words[1])
+            # Initial case
+            add_to_dict(sparse, words[0], words[1])
 
-        prefix = words[0] + ' ' + words[1]
-        for i, word in enumerate(words[1:]):
-            # Slice offset (1) & lookahead (1)
-            if (i + 1 + 1) < words_len:
-                add_to_dict(dense, prefix, words[i+2])
-                prefix = shift(prefix, words[i+2])
+            words[0] = words[0][0].lower() + words[0][1:]
+            prefix = words[0] + ' ' + words[1]
+            for i, word in enumerate(words[1:]):
+                # Slice offset (1) & lookahead (1)
+                if (i + 1 + 1) < words_len:
+                    add_to_dict(dense, prefix, words[i+2])
+                    prefix = shift(prefix, words[i+2])
 
     # Write out our mapping (not in typical json reponse format though)
-    with open('../data/mapping.json', 'w') as f:
+    with open('{0}/mapping.json'.format(DATA_DIR), 'w') as f:
         chains = {
             "sparse": {
                 "count": len(sparse),
