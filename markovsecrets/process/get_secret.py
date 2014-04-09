@@ -2,7 +2,6 @@ import os
 import json
 from random import randrange, seed, sample
 
-from condense import DATA_DIR
 
 MAX_LEN = 75
 words = None
@@ -19,11 +18,18 @@ def get_word(arr):
     return sample(arr, 1)[0]
 
 
-def secret_me_bro():
+def secret_me_bro(is_server=True):
     global words
     if words is None:
         seed()
-        with open('{0}/mapping.json'.format(DATA_DIR)) as f:
+
+        if is_server:
+            fn = 'data/mapping.json'
+        else:
+            from condense import DATA_DIR
+            fn = '{0}/mapping.json'.format(DATA_DIR)
+
+        with open(fn) as f:
             words = json.load(f)
 
     wordlen = 1
