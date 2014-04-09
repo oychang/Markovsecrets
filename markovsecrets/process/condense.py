@@ -49,6 +49,10 @@ class RapGeniusSanitizer(StringSanitizer):
         return super(RapGeniusSanitizer, self).sanitize(s)
 
 
+class PoetrySanitizer(StringSanitizer):
+    pass
+
+
 def condense_facebook():
     sanitizer = FacebookSanitizer()
     files = glob('{0}/[0-9]*.json'.format(FB_DIR))
@@ -87,6 +91,22 @@ def condense_rapgenius():
     return messages
 
 
+def condense_poetry():
+    sanitizer = PoetrySanitizer()
+    files = glob('{0}/poetry/*.txt'.format(DATA_DIR))
+    cleaned_lines = []
+
+    for fn in files:
+        with codecs.open(fn, 'r', 'utf-8') as f:
+            txt = f.readlines()
+        for line in txt:
+            line = sanitizer.sanitize(line)
+            if line is not None:
+                cleaned_lines.append(line)
+
+    return cleaned_lines
+
+
 def save_json(**kwargs):
     fn = '{0}/condensed.json'.format(DATA_DIR)
     with open(fn, 'w') as f:
@@ -94,9 +114,10 @@ def save_json(**kwargs):
 
 
 def main():
-    # fb = condense_facebook()
-    # rg = condense_rapgenius()
-    print rg
+    fb = condense_facebook()
+    rg = condense_rapgenius()
+    poetry = condense_poetry()
+    save_json(fb=fb, rg=rg, poetry=poetry)
 
 
 if __name__ == '__main__':
