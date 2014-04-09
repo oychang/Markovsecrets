@@ -5,7 +5,7 @@ import requests
 TOKEN = 'XXX'
 BASE_SECRETS_URL = 'https://graph.facebook.com/490886417614994/posts?'
 API_URL = '{0}access_token={1}'.format(BASE_SECRETS_URL, TOKEN)
-SAVE_DIRECTORY = '../../data'
+SAVE_DIRECTORY = '../../data/facebook'
 
 
 def url_builder(until=None, limit=100):

@@ -1,54 +1,68 @@
 import os
 import json
+from re import sub
 from glob import glob
 
 from unidecode import unidecode
+from fetch_facebook import SAVE_DIRECTORY as FB_DIR
 
-from fetch_facebook import SAVE_DIRECTORY
-
-
-def save_messages(ls):
-    d = {
-        'data': ls,
-        'count': len(ls)
-    }
-
-    with open('{0}/facebook.json'.format(SAVE_DIRECTORY), 'w') as f:
-        json.dump(d, f)
-
-    return True
+DATA_DIR = '../../data'
 
 
-def condense():
-    files = glob('{0}/[0-9]*.json'.format(SAVE_DIRECTORY))
+class StringSanitizer(object):
+    def whitespace_sanitize(self, s):
+        return sub(r'\s+', ' ', s)
+
+    def link_sanitize(self, s):
+        return s if not s.startswith(('http', 'https')) else ''
+
+    def generic_sanitize(self, s):
+        s = sub(r'[\"\(\)\[\]]', '', s)
+        return sub(r'\n| - | -- ', ' ', s)
+
+    def sanitize(self, s):
+        s = unidecode(s)
+        s = self.link_sanitize(s)
+        s = self.generic_sanitize(s)
+        s = self.whitespace_sanitize(s)
+        s = s.strip()
+
+        if s in ('', ' '):
+            return None
+        return s
+
+
+class FacebookSanitizer(StringSanitizer):
+    # Strip off leading "#n: ""
+    def sanitize(self, s):
+        s = super(FacebookSanitizer, self).sanitize(s)
+        if s is None:
+            return None
+        return sub(r'#[0-9]+:? ', '', s)
+
+
+def condense_facebook():
+    sanitizer = FacebookSanitizer()
+    files = glob('{0}/[0-9]*.json'.format(FB_DIR))
     messages = []
 
     for filename in files:
         with open(filename) as f:
             j = json.load(f)
-            for msg in j.get('data'):
-                # Here, we strip off the leading number,
-                # any newlines, and leading/trailing whitespace
-                message = msg.get('message')
+        for msg in j.get('data'):
+            message = msg.get('message')
+            if message is None:
+                continue
 
-                if message is None:
-                    continue
-                elif message.startswith('#'):
-                    message = message[message.find(' '):]
-
-                message = message.lstrip().rstrip().replace('\n', ' ')
-                message = unidecode(message)
-
+            message = sanitizer.sanitize(message)
+            if message is not None:
                 messages.append(message)
-    else:
-        save_messages(messages)
-        return True
 
-    return False
+    return messages
 
 
 def main():
-    condense()
+    fb = condense_facebook()
 
 
 if __name__ == '__main__':

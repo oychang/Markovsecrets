@@ -8,7 +8,7 @@ Sources
 =======
 
 * Up to Secrets #4265
-* 20 lyricseach from Jay-Z, Kendrick Lamar, & Psy
+* 20 lyrics each from Jay-Z, Kendrick Lamar, & Psy
 * Saga of King Olaf, The Road Not Taken, & The Odyssey
 
 NB: the raw data files are not stored in this repository.
