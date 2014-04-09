@@ -83,6 +83,7 @@ def main():
                     if initial:
                         words[0] = words[0][0].lower() + words[0][1:] + ' ' + words[1]
                         add_to_dict(dense, prefix, words[i+2])
+                        initial = False
 
                     prefix = shift(prefix, words[i+2])
 
