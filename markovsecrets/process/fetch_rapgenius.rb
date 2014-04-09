@@ -23,9 +23,7 @@ def get_lyrics(artist)
 end
 
 
-lyrics = {
-  'count' => ARTISTS.length
-}
+lyrics = Hash.new
 
 ARTISTS.each do |artist|
   lyrics[artist] = get_lyrics artist

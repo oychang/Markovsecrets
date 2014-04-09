@@ -16,8 +16,8 @@ class StringSanitizer(object):
     def link_sanitize(self, s):
         return s if not s.startswith(('http', 'https')) else ''
 
-    def generic_sanitize(self, s):
-        s = sub(r'[\"\(\)\[\]]', '', s)
+    def generic_sanitize(self, s, blacklist=r'[\"\(\)\[\]]'):
+        s = sub(blacklist, '', s)
         return sub(r'\n| - | -- ', ' ', s)
 
     def sanitize(self, s):
@@ -41,6 +41,13 @@ class FacebookSanitizer(StringSanitizer):
         return sub(r'#[0-9]+:? ', '', s)
 
 
+class RapGeniusSanitizer(StringSanitizer):
+    # Get rid of annotations, e.g. [Chorus], [Verse 1: artist]
+    def sanitize(self, s):
+        s = sub(r'\[[\w: ]+\]', ' ', s)
+        return super(RapGeniusSanitizer, self).sanitize(s)
+
+
 def condense_facebook():
     sanitizer = FacebookSanitizer()
     files = glob('{0}/[0-9]*.json'.format(FB_DIR))
@@ -61,8 +68,28 @@ def condense_facebook():
     return messages
 
 
+def condense_rapgenius():
+    sanitizer = RapGeniusSanitizer()
+    fn = '{0}/rapgenius/lyrics.json'.format(DATA_DIR)
+    messages = []
+
+    with open(fn) as f:
+        j = json.load(f)
+    for artist in j:
+        lines = j.get(artist)
+        for line in lines:
+            for subline in line.split('\n'):
+                lyric = sanitizer.sanitize(subline)
+                if lyric is not None:
+                    messages.append(lyric)
+
+    return messages
+
+
 def main():
-    fb = condense_facebook()
+    # fb = condense_facebook()
+    # rg = condense_rapgenius()
+    print rg
 
 
 if __name__ == '__main__':
