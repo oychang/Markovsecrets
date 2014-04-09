@@ -75,18 +75,19 @@ def condense_facebook():
 
 def condense_rapgenius():
     sanitizer = RapGeniusSanitizer()
-    fn = '{0}/rapgenius/lyrics.json'.format(DATA_DIR)
+    files = glob('{0}/rapgenius/*.json'.format(DATA_DIR))
     messages = []
 
-    with open(fn) as f:
-        j = json.load(f)
-    for artist in j:
-        lines = j.get(artist)
-        for line in lines:
-            for subline in line.split('\n'):
-                lyric = sanitizer.sanitize(subline)
-                if lyric is not None:
-                    messages.append(lyric)
+    for fn in files:
+        with open(fn) as f:
+            j = json.load(f)
+        for artist in j:
+            lines = j.get(artist)
+            for line in lines:
+                for subline in line.split('\n'):
+                    lyric = sanitizer.sanitize(subline)
+                    if lyric is not None:
+                        messages.append(lyric)
 
     return messages
 
