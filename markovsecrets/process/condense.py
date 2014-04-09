@@ -1,5 +1,6 @@
 import os
 import json
+import codecs
 from re import sub
 from glob import glob
 
@@ -84,6 +85,12 @@ def condense_rapgenius():
                     messages.append(lyric)
 
     return messages
+
+
+def save_json(**kwargs):
+    fn = '{0}/condensed.json'.format(DATA_DIR)
+    with open(fn, 'w') as f:
+        json.dump(kwargs, f)
 
 
 def main():
