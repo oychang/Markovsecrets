@@ -6,7 +6,13 @@ app = Flask(__name__)
 
 @app.route('/secret')
 def get_secret():
-    return secret_me_bro()
+    secret = secret_me_bro()
+    words = secret.count(' ') + 1
+
+    if words < 10:
+        secret = 'Confucius says "{0}"'.format(secret)
+
+    return secret
 
 
 @app.route('/')

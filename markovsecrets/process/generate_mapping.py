@@ -87,7 +87,7 @@ def main():
 
                     prefix = shift(prefix, words[i+2])
 
-    # Write out our mapping (not in typical json reponse format though)
+    # Write out our mapping
     with open('{0}/mapping.json'.format(DATA_DIR), 'w') as f:
         chains = {
             "sparse": {
